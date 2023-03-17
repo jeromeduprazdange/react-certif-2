@@ -58,7 +58,7 @@ const Teams = () => {
       <Button id="trackBtn" onClick={handleTrackTeam}>
         Track team
       </Button>
-      <TeamsList teams={trackedTeamsCtx.trackedTeams} />
+      <TeamsList teams={trackedTeamsCtx.trackedTeamsIds} />
     </>
   );
 };
