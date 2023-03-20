@@ -4,13 +4,16 @@ import Select from "../../components/UI/Select";
 import useHttp from "../../hooks/use-http";
 import TrackedTeamsContext from "../../store/tracked-teams-context";
 import TeamsList from "./TeamsList/TeamsList";
+import styles from "./Teams.module.css";
 
 const Teams = () => {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(1);
-  const { isLoading, error, sendRequest: fetchTeams } = useHttp();
+  const { error, sendRequest: fetchTeams } = useHttp();
 
   const trackedTeamsCtx = useContext(TrackedTeamsContext);
+
+  const disableButton = teams.length === 0 || trackedTeamsCtx.isLoading;
 
   useEffect(() => {
     const transformTeams = (taskObj) => {
@@ -52,9 +55,10 @@ const Teams = () => {
         options={teams}
         value={selectedTeam}
         onChange={handleSelectChange}
+        className={styles.select}
       ></Select>
-      <Button id="trackBtn" onClick={handleTrackTeam}>
-        Track team
+      <Button id="trackBtn" onClick={handleTrackTeam} disabled={disableButton}>
+        {disableButton ? "Loading..." : "Track team"}
       </Button>
       <TeamsList teams={trackedTeamsCtx.trackedTeamsInfo} />
     </>

@@ -2,7 +2,7 @@ export const getLast12DatesString = () => {
   let dateString = "";
   const today = new Date();
 
-  for (let i = 0; i < 12; i++) {
+  for (let i = 1; i <= 12; i++) {
     const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
     const year = date.getFullYear();
     const month =

@@ -1,52 +1,89 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useHttp from "../hooks/use-http";
-import useMultiHttp from "../hooks/use-multi-http";
-import { getAllIdsString, getLast12DatesString } from "../utils/utils";
+import { getLast12DatesString } from "../utils/utils";
 import TrackedTeamsContext from "./tracked-teams-context";
 
 const TrackedTeamsContextProvider = (props) => {
-  const [trackedTeamsIds, setTrackedTeamsIds] = useState([2]);
   const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
-  const { sendRequest: fetchTeamsInfo } = useMultiHttp();
-
-  useEffect(() => {
-    const last12DatesString = getLast12DatesString();
-    const urls = trackedTeamsIds.map((id) => {
-      return `https://free-nba.p.rapidapi.com/games?page=0${last12DatesString}&per_page=12&team_ids[]=26&${id}`;
-    });
-
-    const transformTeamsInfo = (obj) => {
-      console.log("TRANSFORM", obj);
-      const teamsInfo = obj.map((team) => {
-        return {
-          id: team.data[0].home_team.id,
-          name: team.data[0].home_team.full_name,
-          code: team.data[0].home_team.abbreviation,
-          conference: team.data[0].home_team,
-        };
-      });
-      setTrackedTeamsInfo(teamsInfo);
-      console.log("TRANSFORMED", teamsInfo);
-    };
-
-    fetchTeamsInfo({ urls }, transformTeamsInfo);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const { sendRequest: fetchTeamInfo } = useHttp();
 
   const addTrackedTeamHandler = (id) => {
     console.log("add");
-    const isAlreadyTracked = trackedTeamsIds.includes(id);
+    const isAlreadyTracked = trackedTeamsInfo.some((team) => +id === team.id);
 
     if (!isAlreadyTracked) {
-      setTrackedTeamsIds([...trackedTeamsIds, id]);
+      setIsLoading(true);
+      console.log("not tracked yet");
+      const last12DatesString = getLast12DatesString();
+      const url = `https://free-nba.p.rapidapi.com/games?page=0${last12DatesString}&per_page=12&team_ids[]=${id}`;
+
+      const transformTeamInfo = (obj) => {
+        const matches = obj.data;
+
+        const results = matches.map((match) => {
+          if (
+            (match.home_team.id === +id &&
+              match.home_team_score > match.visitor_team_score) ||
+            (match.visitor_team.id === +id &&
+              match.visitor_team_score > match.home_team_score)
+          ) {
+            return "W";
+          } else {
+            return "L";
+          }
+        });
+
+        const averagePointsGiven =
+          matches.reduce((acc, match) => {
+            if (match.home_team.id === +id) {
+              return acc + match.home_team_score;
+            } else {
+              return acc + match.visitor_team_score;
+            }
+          }, 0) / matches.length;
+
+        const averagePointsTaken =
+          matches.reduce((acc, match) => {
+            if (match.home_team.id !== +id) {
+              return acc + match.home_team_score;
+            } else {
+              return acc + match.visitor_team_score;
+            }
+          }, 0) / matches.length;
+
+        const teamInfo = {
+          id: +id,
+          code:
+            matches[0].home_team.id === +id
+              ? matches[0].home_team.abbreviation
+              : matches[0].visitor_team.abbreviation,
+          name:
+            matches[0].home_team.id === +id
+              ? matches[0].home_team.full_name
+              : matches[0].visitor_team.full_name,
+          conference:
+            matches[0].home_team.id === +id
+              ? matches[0].home_team.conference
+              : matches[0].visitor_team.conference,
+          results,
+          averagePointsGiven: averagePointsGiven.toFixed(),
+          averagePointsTaken: averagePointsTaken.toFixed(),
+        };
+
+        setTrackedTeamsInfo((prevState) => [...prevState, teamInfo]);
+        setIsLoading(false);
+      };
+
+      fetchTeamInfo({ url }, transformTeamInfo);
     }
   };
 
   const removeTrackedTeamHandler = (id) => {
-    console.log("remove");
-    const filteredTeams = trackedTeamsIds.filter(
-      (trackedId) => trackedId !== id
-    );
-    setTrackedTeamsIds(filteredTeams);
+    console.log("remove", id);
+    const filteredTeams = trackedTeamsInfo.filter((team) => team.id !== id);
+    console.log(filteredTeams);
+    setTrackedTeamsInfo(filteredTeams);
   };
 
   return (
@@ -55,6 +92,7 @@ const TrackedTeamsContextProvider = (props) => {
         trackedTeamsInfo,
         onTrackTeam: addTrackedTeamHandler,
         onUntrackTeam: removeTrackedTeamHandler,
+        isLoading,
       }}
     >
       {props.children}
