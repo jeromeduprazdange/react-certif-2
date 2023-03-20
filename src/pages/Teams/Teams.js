@@ -24,8 +24,6 @@ const Teams = () => {
         });
       });
 
-      console.log(loadedTeams);
-
       setTeams(loadedTeams);
     };
 
@@ -58,7 +56,7 @@ const Teams = () => {
       <Button id="trackBtn" onClick={handleTrackTeam}>
         Track team
       </Button>
-      <TeamsList teams={trackedTeamsCtx.trackedTeamsIds} />
+      <TeamsList teams={trackedTeamsCtx.trackedTeamsInfo} />
     </>
   );
 };

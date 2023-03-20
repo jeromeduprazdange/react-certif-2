@@ -1,36 +1,35 @@
 import { useEffect, useState } from "react";
 import useHttp from "../hooks/use-http";
+import useMultiHttp from "../hooks/use-multi-http";
 import { getAllIdsString, getLast12DatesString } from "../utils/utils";
 import TrackedTeamsContext from "./tracked-teams-context";
 
 const TrackedTeamsContextProvider = (props) => {
-  const [trackedTeamsIds, setTrackedTeamsIds] = useState([2, 5, 6]);
-  const [trackedTeamsInfo, setTrackedTeams] = useState([]);
-  const { sendRequest: fetchTeamInfo } = useHttp();
+  const [trackedTeamsIds, setTrackedTeamsIds] = useState([2]);
+  const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
+  const { sendRequest: fetchTeamsInfo } = useMultiHttp();
 
   useEffect(() => {
     const last12DatesString = getLast12DatesString();
-    console.log(last12DatesString);
-    const fetchMultipleTeamsInfo = async () => {
-      const requests = trackedTeamsIds.map((id) => {
-        return `https://free-nba.p.rapidapi.com/games?page=0${last12DatesString}&per_page=12&team_ids[]=26&${id}`;
+    const urls = trackedTeamsIds.map((id) => {
+      return `https://free-nba.p.rapidapi.com/games?page=0${last12DatesString}&per_page=12&team_ids[]=26&${id}`;
+    });
+
+    const transformTeamsInfo = (obj) => {
+      console.log("TRANSFORM", obj);
+      const teamsInfo = obj.map((team) => {
+        return {
+          id: team.data[0].home_team.id,
+          name: team.data[0].home_team.full_name,
+          code: team.data[0].home_team.abbreviation,
+          conference: team.data[0].home_team,
+        };
       });
-
-      console.log(requests);
-
-      const requestsPromises = requests.map((request) =>
-        fetchTeamInfo({ url: request })
-      );
-
-      try {
-        const responses = await Promise.all(requestsPromises);
-        const allData = responses.map((response) => response.data);
-        console.log(allData);
-      } catch (error) {
-        // Gérer les erreurs ici
-      }
+      setTrackedTeamsInfo(teamsInfo);
+      console.log("TRANSFORMED", teamsInfo);
     };
-    fetchMultipleTeamsInfo();
+
+    fetchTeamsInfo({ urls }, transformTeamsInfo);
   }, []);
 
   const addTrackedTeamHandler = (id) => {
