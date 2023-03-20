@@ -7,19 +7,15 @@ import TeamsContext from "../../store/teams-context";
 
 const Teams = () => {
   const [selectedTeam, setSelectedTeam] = useState(1);
-
   const teamsCtx = useContext(TeamsContext);
-  const teams = teamsCtx.teams;
 
-  const disableButton = teams.length === 0 || TeamsContext.isLoading;
+  const disableButton = teamsCtx.teams.length === 0 || teamsCtx.isLoading;
 
   const handleSelectChange = (event) => {
     setSelectedTeam(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleTrackTeam = () => {
-    console.log(selectedTeam);
     teamsCtx.onTrackTeam(selectedTeam);
   };
 
@@ -27,7 +23,7 @@ const Teams = () => {
     <>
       <Select
         id="teamSelect"
-        options={teams}
+        options={teamsCtx.teams}
         value={selectedTeam}
         onChange={handleSelectChange}
         className={styles.select}

@@ -7,7 +7,7 @@ const TeamsContextProvider = (props) => {
   const [teams, setTeams] = useState([]);
   const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { error, sendRequest: fetchTeams } = useHttp();
+  const { sendRequest: fetchTeams } = useHttp();
   const { sendRequest: fetchTeamInfo } = useHttp();
 
   useEffect(() => {
@@ -34,12 +34,10 @@ const TeamsContextProvider = (props) => {
   }, [fetchTeams]);
 
   const addTrackedTeamHandler = (id) => {
-    console.log("add");
     const isAlreadyTracked = trackedTeamsInfo.some((team) => +id === team.id);
 
     if (!isAlreadyTracked) {
       setIsLoading(true);
-      console.log("not tracked yet");
       const last12DatesString = getLast12DatesString();
       const url = `https://free-nba.p.rapidapi.com/games?page=0${last12DatesString}&per_page=12&team_ids[]=${id}`;
 
@@ -100,8 +98,6 @@ const TeamsContextProvider = (props) => {
           averagePointsTaken: averagePointsTaken.toFixed(),
         };
 
-        console.log(teamInfo);
-
         setTrackedTeamsInfo((prevState) => [...prevState, teamInfo]);
         setIsLoading(false);
       };
@@ -111,9 +107,7 @@ const TeamsContextProvider = (props) => {
   };
 
   const removeTrackedTeamHandler = (id) => {
-    console.log("remove", id);
     const filteredTeams = trackedTeamsInfo.filter((team) => team.id !== id);
-    console.log(filteredTeams);
     setTrackedTeamsInfo(filteredTeams);
   };
 

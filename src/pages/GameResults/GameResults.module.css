@@ -1,0 +1,29 @@
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.separator {
+  border-top: 1px solid #bbb;
+}
+
+.middle {
+  display: flex;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.back-button {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 0.3rem;
+  cursor: pointer;
+}

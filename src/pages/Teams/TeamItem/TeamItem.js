@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import TrackedTeamsContext from "../../store/teams-context";
-import Button from "../UI/Button";
-import Card from "../UI/Card";
+import Button from "../../../components/UI/Button";
+import Card from "../../../components/UI/Card";
 import styles from "./TeamItem.module.css";
+import TeamsContext from "../../../store/teams-context";
 
 const TeamItem = (props) => {
-  const trackedTeamsCtx = useContext(TrackedTeamsContext);
+  const teamsCtx = useContext(TeamsContext);
 
   const removeHandler = () => {
-    trackedTeamsCtx.onUntrackTeam(props.team.id);
+    teamsCtx.onUntrackTeam(props.team.id);
   };
 
   return (
