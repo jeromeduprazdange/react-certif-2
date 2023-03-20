@@ -16,10 +16,10 @@ const Teams = () => {
   const disableButton = teams.length === 0 || trackedTeamsCtx.isLoading;
 
   useEffect(() => {
-    const transformTeams = (taskObj) => {
+    const transformTeams = (teamsObj) => {
       const loadedTeams = [];
 
-      taskObj.data.forEach((team) => {
+      teamsObj.data.forEach((team) => {
         loadedTeams.push({
           value: team.id,
           label: team.full_name,

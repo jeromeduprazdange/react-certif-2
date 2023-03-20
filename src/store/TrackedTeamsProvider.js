@@ -1,12 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useHttp from "../hooks/use-http";
 import { getLast12DatesString } from "../utils/utils";
 import TrackedTeamsContext from "./tracked-teams-context";
 
 const TrackedTeamsContextProvider = (props) => {
+  // const [teams, setTeams] = useState([]);
   const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  // const { error, sendRequest: fetchTeams } = useHttp();
   const { sendRequest: fetchTeamInfo } = useHttp();
+
+  // useEffect(() => {
+  //   const transformTeams = (teamsObj) => {
+  //     const loadedTeams = [];
+
+  //     teamsObj.data.forEach((team) => {
+  //       loadedTeams.push({
+  //         value: team.id,
+  //         label: team.full_name,
+  //         code: team.abbreviation,
+  //       });
+  //     });
+
+  //     setTeams(loadedTeams);
+  //   };
+
+  //   fetchTeams(
+  //     {
+  //       url: "https://free-nba.p.rapidapi.com/teams",
+  //     },
+  //     transformTeams
+  //   );
+  // }, [fetchTeams]);
 
   const addTrackedTeamHandler = (id) => {
     console.log("add");
@@ -21,18 +46,22 @@ const TrackedTeamsContextProvider = (props) => {
       const transformTeamInfo = (obj) => {
         const matches = obj.data;
 
-        const results = matches.map((match) => {
-          if (
-            (match.home_team.id === +id &&
-              match.home_team_score > match.visitor_team_score) ||
-            (match.visitor_team.id === +id &&
-              match.visitor_team_score > match.home_team_score)
-          ) {
-            return "W";
-          } else {
-            return "L";
-          }
-        });
+        const results = matches
+          .map((match) => {
+            if (
+              (match.home_team.id === +id &&
+                match.home_team_score > match.visitor_team_score) ||
+              (match.visitor_team.id === +id &&
+                match.visitor_team_score > match.home_team_score)
+            ) {
+              return { id: match.id, date: match.date, label: "W" };
+            } else {
+              return { id: match.id, date: match.date, label: "L" };
+            }
+          })
+          .sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+          });
 
         const averagePointsGiven =
           matches.reduce((acc, match) => {
@@ -70,6 +99,8 @@ const TrackedTeamsContextProvider = (props) => {
           averagePointsGiven: averagePointsGiven.toFixed(),
           averagePointsTaken: averagePointsTaken.toFixed(),
         };
+
+        console.log(teamInfo);
 
         setTrackedTeamsInfo((prevState) => [...prevState, teamInfo]);
         setIsLoading(false);

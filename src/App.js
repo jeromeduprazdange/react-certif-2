@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Teams from "./pages/Teams/Teams";
 import GameResults from "./pages/GameResults/GameResults";
 import TrackedTeamsContextProvider from "./store/TrackedTeamsProvider";
-import { useState } from "react";
 
 function App() {
   return (
@@ -16,7 +15,7 @@ function App() {
         <main className={styles.main}>
           <Routes>
             <Route path="/" element={<Teams />} />
-            <Route path="/results" element={<GameResults />} />
+            <Route path="/results/:code" element={<GameResults />} />
           </Routes>
         </main>
       </TrackedTeamsContextProvider>

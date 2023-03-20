@@ -1,5 +1,10 @@
 .button {
-  color: red;
+  background-color: white;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #ccc;
 }
 
 .no-style {
