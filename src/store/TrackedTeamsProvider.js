@@ -4,34 +4,34 @@ import { getLast12DatesString } from "../utils/utils";
 import TrackedTeamsContext from "./tracked-teams-context";
 
 const TrackedTeamsContextProvider = (props) => {
-  // const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const { error, sendRequest: fetchTeams } = useHttp();
+  const { error, sendRequest: fetchTeams } = useHttp();
   const { sendRequest: fetchTeamInfo } = useHttp();
 
-  // useEffect(() => {
-  //   const transformTeams = (teamsObj) => {
-  //     const loadedTeams = [];
+  useEffect(() => {
+    const transformTeams = (teamsObj) => {
+      const loadedTeams = [];
 
-  //     teamsObj.data.forEach((team) => {
-  //       loadedTeams.push({
-  //         value: team.id,
-  //         label: team.full_name,
-  //         code: team.abbreviation,
-  //       });
-  //     });
+      teamsObj.data.forEach((team) => {
+        loadedTeams.push({
+          value: team.id,
+          label: team.full_name,
+          code: team.abbreviation,
+        });
+      });
 
-  //     setTeams(loadedTeams);
-  //   };
+      setTeams(loadedTeams);
+    };
 
-  //   fetchTeams(
-  //     {
-  //       url: "https://free-nba.p.rapidapi.com/teams",
-  //     },
-  //     transformTeams
-  //   );
-  // }, [fetchTeams]);
+    fetchTeams(
+      {
+        url: "https://free-nba.p.rapidapi.com/teams",
+      },
+      transformTeams
+    );
+  }, [fetchTeams]);
 
   const addTrackedTeamHandler = (id) => {
     console.log("add");
@@ -120,6 +120,7 @@ const TrackedTeamsContextProvider = (props) => {
   return (
     <TrackedTeamsContext.Provider
       value={{
+        teams,
         trackedTeamsInfo,
         onTrackTeam: addTrackedTeamHandler,
         onUntrackTeam: removeTrackedTeamHandler,

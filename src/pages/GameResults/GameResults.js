@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/UI/Button";
 import Card from "../../components/UI/Card";
-import useHttp from "../../hooks/use-http";
 import styles from "./GameResults.modules.css";
 
 const GameResults = () => {

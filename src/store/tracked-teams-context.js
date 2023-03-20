@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
 const TrackedTeamsContext = React.createContext({
-  trackedTeams: [],
+  teams: [],
+  trackedTeamsInfo: [],
   onTrackTeam: (id) => {},
   onUntrackTeam: (id) => {},
+  isLoading: false,
 });
 
 export default TrackedTeamsContext;
