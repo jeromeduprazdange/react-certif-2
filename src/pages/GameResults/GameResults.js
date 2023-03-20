@@ -1,10 +1,15 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/UI/Button";
 import Card from "../../components/UI/Card";
+import TeamsContext from "../../store/teams-context";
 import styles from "./GameResults.modules.css";
 
 const GameResults = () => {
   const navigate = useNavigate();
+
+  const teamsCtx = useContext(TeamsContext);
+  const teams = teamsCtx.teams;
 
   const goBack = () => {
     navigate(-1);

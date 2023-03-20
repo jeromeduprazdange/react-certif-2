@@ -1,6 +1,6 @@
 import React from "react";
 
-const TrackedTeamsContext = React.createContext({
+const TeamsContext = React.createContext({
   teams: [],
   trackedTeamsInfo: [],
   onTrackTeam: (id) => {},
@@ -8,4 +8,4 @@ const TrackedTeamsContext = React.createContext({
   isLoading: false,
 });
 
-export default TrackedTeamsContext;
+export default TeamsContext;

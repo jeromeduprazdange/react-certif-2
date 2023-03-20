@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import TrackedTeamsContext from "../../store/tracked-teams-context";
+import TrackedTeamsContext from "../../store/teams-context";
 import Button from "../UI/Button";
 import Card from "../UI/Card";
 import styles from "./TeamItem.module.css";

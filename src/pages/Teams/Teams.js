@@ -1,17 +1,17 @@
 import { useContext, useState } from "react";
 import Button from "../../components/UI/Button";
 import Select from "../../components/UI/Select";
-import TrackedTeamsContext from "../../store/tracked-teams-context";
 import TeamsList from "./TeamsList/TeamsList";
 import styles from "./Teams.module.css";
+import TeamsContext from "../../store/teams-context";
 
 const Teams = () => {
   const [selectedTeam, setSelectedTeam] = useState(1);
 
-  const trackedTeamsCtx = useContext(TrackedTeamsContext);
-  const teams = trackedTeamsCtx.teams;
+  const teamsCtx = useContext(TeamsContext);
+  const teams = teamsCtx.teams;
 
-  const disableButton = teams.length === 0 || trackedTeamsCtx.isLoading;
+  const disableButton = teams.length === 0 || TeamsContext.isLoading;
 
   const handleSelectChange = (event) => {
     setSelectedTeam(event.target.value);
@@ -20,7 +20,7 @@ const Teams = () => {
 
   const handleTrackTeam = () => {
     console.log(selectedTeam);
-    trackedTeamsCtx.onTrackTeam(selectedTeam);
+    teamsCtx.onTrackTeam(selectedTeam);
   };
 
   return (
@@ -35,7 +35,7 @@ const Teams = () => {
       <Button id="trackBtn" onClick={handleTrackTeam} disabled={disableButton}>
         {disableButton ? "Loading..." : "Track team"}
       </Button>
-      <TeamsList teams={trackedTeamsCtx.trackedTeamsInfo} />
+      <TeamsList teams={teamsCtx.trackedTeamsInfo} />
     </>
   );
 };

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import useHttp from "../hooks/use-http";
 import { getLast12DatesString } from "../utils/utils";
-import TrackedTeamsContext from "./tracked-teams-context";
+import TeamsContext from "./teams-context";
 
-const TrackedTeamsContextProvider = (props) => {
+const TeamsContextProvider = (props) => {
   const [teams, setTeams] = useState([]);
   const [trackedTeamsInfo, setTrackedTeamsInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +118,7 @@ const TrackedTeamsContextProvider = (props) => {
   };
 
   return (
-    <TrackedTeamsContext.Provider
+    <TeamsContext.Provider
       value={{
         teams,
         trackedTeamsInfo,
@@ -128,8 +128,8 @@ const TrackedTeamsContextProvider = (props) => {
       }}
     >
       {props.children}
-    </TrackedTeamsContext.Provider>
+    </TeamsContext.Provider>
   );
 };
 
-export default TrackedTeamsContextProvider;
+export default TeamsContextProvider;

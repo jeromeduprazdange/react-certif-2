@@ -3,12 +3,12 @@ import styles from "./App.module.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Teams from "./pages/Teams/Teams";
 import GameResults from "./pages/GameResults/GameResults";
-import TrackedTeamsContextProvider from "./store/TrackedTeamsProvider";
+import TeamsContextProvider from "./store/TeamsProvider";
 
 function App() {
   return (
     <Router>
-      <TrackedTeamsContextProvider>
+      <TeamsContextProvider>
         <Header></Header>
         <Link to="/">teams</Link>
         <Link to="/results">results</Link>
@@ -18,7 +18,7 @@ function App() {
             <Route path="/results/:code" element={<GameResults />} />
           </Routes>
         </main>
-      </TrackedTeamsContextProvider>
+      </TeamsContextProvider>
     </Router>
   );
 }
